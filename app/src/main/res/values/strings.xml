@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ChatApp</string>
+    <string name="app_name">Home Messenger</string>
     <string name="welcome">Привет</string>
     <string name="login">Войдите, чтобы продолжить</string>
     <string name="email">Эл. почта</string>
