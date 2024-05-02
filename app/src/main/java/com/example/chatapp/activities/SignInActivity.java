@@ -25,15 +25,15 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         preferenceManager = new PreferenceManager(getApplicationContext());
+        if (preferenceManager.getBoolean(Constants.KEY_IS_SIGNED_IN)){
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
         binding = ActivitySignInBinding.inflate(getLayoutInflater());
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
         setListeners();
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
     }
 
     private void setListeners(){

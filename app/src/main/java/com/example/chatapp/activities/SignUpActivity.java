@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private ActivitySignUpBinding binding;
     private PreferenceManager preferenceManager;
-    private String encodedImage;
+    private String encodedImageSTR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
         user.put(Constants.KEY_NAME, binding.inputName.getText().toString());
         user.put(Constants.KEY_EMAIL, binding.inputEmail.getText().toString());
         user.put(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString());
+        user.put(Constants.KEY_IMAGE, encodedImageSTR);
         database.collection(Constants.KEY_COLLECTION_USERS)
                 .add(user)
                 .addOnSuccessListener(documentReferences ->{
@@ -75,7 +77,8 @@ public class SignUpActivity extends AppCompatActivity {
             preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
             preferenceManager.putString(Constants.KEY_USER_ID, documentReferences.getId());
             preferenceManager.putString(Constants.KEY_NAME, binding.inputName.getText().toString());
-            preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
+            Log.d("CHECKIM_2", encodedImageSTR);
+            preferenceManager.putString(Constants.KEY_IMAGE, encodedImageSTR);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -102,12 +105,13 @@ public class SignUpActivity extends AppCompatActivity {
                     if (result.getData() != null){
                         Uri imageUri = result.getData().getData();
                         try{
-                            assert imageUri != null;
+//                            assert imageUri != null;
                             InputStream inputStream = getContentResolver().openInputStream(imageUri);
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                             binding.imageProfile.setImageBitmap(bitmap);
                             binding.textAddImage.setVisibility(View.GONE);
-                            this.encodedImage = encodedImage(bitmap);
+                            encodedImageSTR = encodedImage(bitmap);
+                            Log.d("CHECKIM_1", encodedImageSTR);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -117,7 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
     );
 
     private Boolean isValidSignUpDetails(){
-        if (this.encodedImage == null){
+        if (this.encodedImageSTR == null){
             showToast("Выберите изображение");
             return false;
         } else if (binding.inputName.getText().toString().trim().isEmpty()){
